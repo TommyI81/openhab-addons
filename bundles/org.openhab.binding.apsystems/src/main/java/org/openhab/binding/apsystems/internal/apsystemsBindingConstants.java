@@ -25,9 +25,12 @@ import org.openhab.core.thing.ThingTypeUID;
 public class apsystemsBindingConstants {
 
     private static final String BINDING_ID = "apsystems";
+    private static final String DEVICE_BRIDGE = "bridge";
+    private static final String DEVICE_DS3 = "DS3";
 
     // List of all Thing Type UIDs
-    public static final ThingTypeUID THING_TYPE_SAMPLE = new ThingTypeUID(BINDING_ID, "sample1");
+    public static final ThingTypeUID BRIDGE_THING_TYPE = new ThingTypeUID(BINDING_ID, DEVICE_BRIDGE);
+    public static final ThingTypeUID DS3INVERTER_THING_TYPE = new ThingTypeUID(BINDING_ID, DEVICE_DS3);
 
     // List of all Channel ids
     public static final String CHANNEL_1 = "channel1";

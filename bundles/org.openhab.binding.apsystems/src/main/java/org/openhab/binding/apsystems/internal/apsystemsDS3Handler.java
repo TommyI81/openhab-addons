@@ -16,6 +16,7 @@ import static org.openhab.binding.apsystems.internal.apsystemsBindingConstants.*
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
@@ -26,24 +27,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link apsystemsHandler} is responsible for handling commands, which are
+ * The {@link apsystemsDS3Handler} is responsible for handling commands, which are
  * sent to one of the channels.
  *
  * @author Thomas Ilzhoefer - Initial contribution
  */
 @NonNullByDefault
-public class apsystemsHandler extends BaseThingHandler {
+public class apsystemsDS3Handler extends BaseThingHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(apsystemsHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(apsystemsDS3Handler.class);
+    private @Nullable apsystemsDS3Configuration config;
 
-    private @Nullable apsystemsConfiguration config;
-
-    public apsystemsHandler(Thing thing) {
+    public apsystemsDS3Handler(Thing thing) {
         super(thing);
     }
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
+        logger.info("Jemand moechte was von {}... und zwar {}", channelUID.getId(), command.toString());
+
         if (CHANNEL_1.equals(channelUID.getId())) {
             if (command instanceof RefreshType) {
                 // TODO: handle data refresh
@@ -60,7 +62,9 @@ public class apsystemsHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        config = getConfigAs(apsystemsConfiguration.class);
+        config = getConfigAs(apsystemsDS3Configuration.class);
+
+        logger.info("DS3 Inverter {} inizialisiert", this.config.serial);
 
         // TODO: Initialize the handler.
         // The framework requires you to return from this method quickly, i.e. any network access must be done in
@@ -74,18 +78,22 @@ public class apsystemsHandler extends BaseThingHandler {
         // set the thing status to UNKNOWN temporarily and let the background task decide for the real status.
         // the framework is then able to reuse the resources from the thing handler initialization.
         // we set this upfront to reliably check status updates in unit tests.
-        updateStatus(ThingStatus.UNKNOWN);
+        updateStatus(ThingStatus.ONLINE);
+
+        updateState("state", new StringType("Fast as lightning"));
 
         // Example for background initialization:
-        scheduler.execute(() -> {
-            boolean thingReachable = true; // <background task with long running initialization here>
-            // when done do:
-            if (thingReachable) {
-                updateStatus(ThingStatus.ONLINE);
-            } else {
-                updateStatus(ThingStatus.OFFLINE);
-            }
-        });
+        /*
+         * scheduler.execute(() -> {
+         * boolean thingReachable = true; // <background task with long running initialization here>
+         * // when done do:
+         * if (thingReachable) {
+         * updateStatus(ThingStatus.ONLINE);
+         * } else {
+         * updateStatus(ThingStatus.OFFLINE);
+         * }
+         * });
+         */
 
         // These logging types should be primarily used by bindings
         // logger.trace("Example trace message");

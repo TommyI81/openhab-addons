@@ -15,17 +15,17 @@ package org.openhab.binding.apsystems.internal;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link apsystemsConfiguration} class contains fields mapping thing configuration parameters.
+ * The {@link apsystemsECUConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Thomas Ilzhoefer - Initial contribution
  */
 @NonNullByDefault
-public class apsystemsConfiguration {
+public class apsystemsECUConfiguration {
 
     /**
      * Sample configuration parameters. Replace with your own.
      */
-    public String hostname = "";
-    public String password = "";
-    public int refreshInterval = 600;
+    public String ipAddress = "";
+    public Integer port = 0;
+    public Integer pollingInterval = 3000;
 }
