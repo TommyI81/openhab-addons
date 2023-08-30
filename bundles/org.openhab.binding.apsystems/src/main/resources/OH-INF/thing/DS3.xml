@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<thing:thing-descriptions bindingId="tapocontrol"
+<thing:thing-descriptions bindingId="apsystems"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
@@ -9,8 +9,21 @@
 		<description>APSYSTEMS DS3 Inverter</description>
 
 		<channels>
-			<channel id="state" typeId="inverterState"/>
+			<channel id="state" typeId="inverterState">
+				<label>Inverter State</label>
+			</channel>
 		</channels>
+
+		<properties>
+			<property name="serialnumber"/>
+			<property name="type"/>
+		</properties>
+
+
+		<representation-property>serialnumber</representation-property>
+
+		<config-description-ref uri="thing-type:apsystems:DS3"/>
+
 	</thing-type>
 
 
@@ -20,4 +33,6 @@
 		<description>shows the state of the inverter</description>
 		<state readOnly="true"/>
 	</channel-type>
+
+
 </thing:thing-descriptions>
