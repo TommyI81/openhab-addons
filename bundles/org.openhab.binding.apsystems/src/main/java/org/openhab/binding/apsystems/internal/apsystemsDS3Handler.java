@@ -14,6 +14,8 @@ package org.openhab.binding.apsystems.internal;
 
 import static org.openhab.binding.apsystems.internal.apsystemsBindingConstants.*;
 
+import java.util.Map;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.library.types.StringType;
@@ -79,6 +81,11 @@ public class apsystemsDS3Handler extends BaseThingHandler {
         // the framework is then able to reuse the resources from the thing handler initialization.
         // we set this upfront to reliably check status updates in unit tests.
         updateStatus(ThingStatus.ONLINE);
+
+        Map<String, String> proerties = editProperties();
+        proerties.put("serialnumber", "ASDF");
+        proerties.put("type", "DS3");
+        updateProperties(proerties);
 
         updateState("state", new StringType("Fast as lightning"));
 
