@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.apsystems.internal;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.ThingStatus;
@@ -39,7 +40,7 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID arg0, Command arg1) {
+    public void handleCommand(@NonNull ChannelUID arg0, @NonNull Command arg1) {
         // TODO Auto-generated method stub
         logger.info("Hier gibt's was zu handlen {} --> {}", arg0, arg1);
     }
