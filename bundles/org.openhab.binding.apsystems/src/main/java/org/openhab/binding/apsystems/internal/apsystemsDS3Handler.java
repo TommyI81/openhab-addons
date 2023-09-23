@@ -83,11 +83,11 @@ public class apsystemsDS3Handler extends BaseThingHandler {
         updateStatus(ThingStatus.ONLINE);
 
         Map<String, String> proerties = editProperties();
-        proerties.put("serialnumber", "ASDF");
-        proerties.put("type", "DS3");
+        proerties.put("inverter_serialnumber", "shserail");
+        proerties.put("inverter_type", "DS3");
         updateProperties(proerties);
 
-        updateState("state", new StringType("Fast as lightning"));
+        updateState("inverter_state", new StringType("mega Fast as lightning"));
 
         // Example for background initialization:
         /*

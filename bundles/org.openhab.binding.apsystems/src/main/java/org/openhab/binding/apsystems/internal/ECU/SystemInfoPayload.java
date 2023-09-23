@@ -15,27 +15,30 @@ package org.openhab.binding.apsystems.internal.ECU;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author Thomas Ilzhoefer - Initial contribution
  */
+@NonNullByDefault
 public class SystemInfoPayload extends ECUResponsePayload {
 
     private SystemInfoPayload() {
     }
 
-    private String ECUId;
-    private String ECUModel;
-    private Float LifeTimeEnergy;
-    private Integer LastSystemPower;
-    private Float CurrentDayEnergy;
-    private String LastTimeConnectedEMA;
-    private Integer NoOfInverters;
-    private Integer InvertersOnline;
-    private String EcuChannel;
-    private String Version;
-    private String TimeZone;
-    private String EthernetMAC;
-    private String WirelessMAC;
+    private String ECUId = "unknown";
+    private String ECUModel = "unknown";
+    private Float LifeTimeEnergy = 0f;
+    private Integer LastSystemPower = 0;
+    private Float CurrentDayEnergy = 0f;
+    private String LastTimeConnectedEMA = "nver";
+    private Integer NoOfInverters = 0;
+    private Integer InvertersOnline = 0;
+    private String EcuChannel = "unknown";
+    private String Version = "unknown";
+    private String TimeZone = "unknown";
+    private String EthernetMAC = "not implemented";
+    private String WirelessMAC = "not implemented";
 
     /**
      * 

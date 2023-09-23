@@ -5,22 +5,28 @@
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
 	<thing-type id="DS3">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="ecu"/>
+		</supported-bridge-type-refs>
+
+
 		<label>Inverter</label>
 		<description>APSYSTEMS DS3 Inverter</description>
 
 		<channels>
-			<channel id="state" typeId="inverterState">
+			<channel id="inverter_state" typeId="inverterState">
 				<label>Inverter State</label>
 			</channel>
 		</channels>
 
+
 		<properties>
-			<property name="serialnumber"/>
-			<property name="type"/>
+			<property name="inverter_serialnumber"/>
+			<property name="inverter_type"/>
 		</properties>
 
 
-		<representation-property>serialnumber</representation-property>
+		<representation-property>inverter_serialnumber</representation-property>
 
 		<config-description-ref uri="thing-type:apsystems:DS3"/>
 
@@ -33,6 +39,8 @@
 		<description>shows the state of the inverter</description>
 		<state readOnly="true"/>
 	</channel-type>
+
+
 
 
 </thing:thing-descriptions>

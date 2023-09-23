@@ -4,7 +4,7 @@
 	xmlns:config-description="https://openhab.org/schemas/config-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/config-description/v1.0.0 https://openhab.org/schemas/config-description-1.0.0.xsd">
 
-	<config-description uri="bridge-type:apsystems:bridge">
+	<config-description uri="bridge-type:apsystems:ecu">
 		<parameter name="ipAddress" type="text" required="true">
 			<context>network-address</context>
 			<label>IP Address</label>
@@ -29,4 +29,5 @@
 			<description>Serialnumber of the Inverter</description>
 		</parameter>
 	</config-description>
+
 </config-description:config-descriptions>

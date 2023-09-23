@@ -7,6 +7,40 @@
 	<bridge-type id="ecu">
 		<label>ECU Bridge</label>
 		<description>APSystems Energy Communication Unit</description>
-		<config-description-ref uri="bridge-type:apsystems:bridge"/>
+
+		<channels>
+			<channel id="ECU_lastSystemPower" typeId="systemPower">
+				<label>Last System Power</label>
+			</channel>
+		</channels>
+
+		<properties>
+			<property name="ECU_Serialnumber"/>
+			<property name="ECU_Version"/>
+			<property name="ECU_Model"/>
+			<property name="ECU_TimeZone"/>
+
+			<!--
+				<property name="ECU_LifeTimeEnergy"/>
+				<property name="ECU_CurrentDayEnergy"/>
+				<property name="ECU_NoOfInverters"/>
+				<property name="ECU_NoOfInvertersOnline"/>
+				<property name="ECU_Channel"/>
+			-->
+
+		</properties>
+
+		<representation-property>bridge_serialnumber</representation-property>
+
+		<config-description-ref uri="bridge-type:apsystems:ecu"/>
 	</bridge-type>
+
+
+	<channel-type id="systemPower">
+		<item-type>String</item-type>
+		<label>Last System Power</label>
+		<description>Last Power reported from all connected inverters</description>
+		<state readOnly="true"/>
+	</channel-type>
+
 </thing:thing-descriptions>

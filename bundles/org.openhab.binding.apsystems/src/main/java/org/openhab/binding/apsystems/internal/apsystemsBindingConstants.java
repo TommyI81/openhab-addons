@@ -25,7 +25,7 @@ import org.openhab.core.thing.ThingTypeUID;
 public class apsystemsBindingConstants {
 
     private static final String BINDING_ID = "apsystems";
-    private static final String DEVICE_BRIDGE = "bridge";
+    private static final String DEVICE_BRIDGE = "ecu";
     private static final String DEVICE_DS3 = "DS3";
 
     // List of all Thing Type UIDs
