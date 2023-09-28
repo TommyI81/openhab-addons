@@ -33,9 +33,31 @@ public class apsystemsBindingConstants {
     public static final ThingTypeUID DS3INVERTER_THING_TYPE = new ThingTypeUID(BINDING_ID, DEVICE_DS3);
 
     // List of all Channel ids
-    public static final String CHANNEL_1 = "channel1";
+    public static final String CHANNEL_ECU_LAST_SYSTEM_POWER = "ECU_lastSystemPower";
+    public static final String CHANNEL_ECU_LIFETIME_ENERGY = "ECU_LifeTimeEnergy";
+    public static final String CHANNEL_ECU_CURRENT_DAY_ENERGY = "ECU_CurrentDayEnergy";
+    public static final String CHANNEL_ECU_NO_OF_INVERTERS = "ECU_NoOfInverters";
+    public static final String CHANNEL_ECU_NO_OF_INVERTERS_ONLINE = "ECU_NoOfInvertersOnline";
 
-    // ECU specific Constants
+    public static final String CHANNEL_DS3_INVERTER_STATE = "DS3_InverterState";
+    public static final String CHANNEL_DS3_INVERTER_FREQUENCY = "DS3_Frequency";
+    public static final String CHANNEL_DS3_INVERTER_TEMPERATURE = "DS3_Temperature";
+    public static final String CHANNEL_DS3_INVERTER_POWER1 = "DS3_Power1";
+    public static final String CHANNEL_DS3_INVERTER_POWER2 = "DS3_Power2";
+    public static final String CHANNEL_DS3_INVERTER_VOLTAGE1 = "DS3_Voltage1";
+    public static final String CHANNEL_DS3_INVERTER_VOLTAGE2 = "DS3_Voltage2";
+
+    // List of all Properties
+    public static final String PROPERTY_ECU_SERIALNUMBER = "ECU_Serialnumber";
+    public static final String PROPERTY_ECU_VERSION = "ECU_Version";
+    public static final String PROPERTY_ECU_MODEL = "ECU_Model";
+    public static final String PROPERTY_ECU_TIME_ZONE = "ECU_TimeZone";
+    public static final String PROPERTY_ECU_CHANNEL = "ECU_Channel";
+
+    public static final String PROPERTY_DS3_SERIALNUMBER = "DS3_Serialnumber";
+    public static final String PROPERTY_DS3_TYPE = "DS3_Type";
+
+    // ECU protocol specific Constants
     public static final String ECU_PATTERN_STRART = "APS";
     public static final String ECU_PATTERN_END = "END\n";
 

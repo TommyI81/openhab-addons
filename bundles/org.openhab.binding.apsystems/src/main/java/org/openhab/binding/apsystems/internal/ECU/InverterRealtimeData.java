@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.apsystems.internal.apsystemsBindingConstants.InverterState;
 import org.openhab.binding.apsystems.internal.apsystemsBindingConstants.InverterType;
 
 /**
  * @author Thomas Ilzhoefer - Initial contribution
  */
+@NonNullByDefault
 public class InverterRealtimeData {
 
     private InverterState State;

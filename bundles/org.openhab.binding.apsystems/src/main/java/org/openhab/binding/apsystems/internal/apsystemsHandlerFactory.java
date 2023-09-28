@@ -54,13 +54,12 @@ public class apsystemsHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (BRIDGE_THING_TYPE.equals(thingTypeUID)) {
-            logger.info("Bridge called");
             return new apsystemsBridgeHandler((Bridge) thing);
         } else if (DS3INVERTER_THING_TYPE.equals(thingTypeUID)) {
-            logger.info("DS3 Inverter called");
             return new apsystemsDS3Handler(thing);
         }
 
+        logger.warn("unknwon thing requested {}", thing.getThingTypeUID());
         return null;
     }
 }
