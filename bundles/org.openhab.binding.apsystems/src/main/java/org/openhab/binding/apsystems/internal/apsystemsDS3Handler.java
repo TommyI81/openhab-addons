@@ -15,6 +15,7 @@ package org.openhab.binding.apsystems.internal;
 import static org.openhab.binding.apsystems.internal.apsystemsBindingConstants.*;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.measure.quantity.Frequency;
 
@@ -47,6 +48,7 @@ public class apsystemsDS3Handler extends BaseThingHandler {
     private final Logger logger = LoggerFactory.getLogger(apsystemsDS3Handler.class);
     private apsystemsDS3Configuration config;
     private @Nullable InverterRealtimeData lastInverterRealtimeData;
+    private float lastInverterSignal;
 
     public apsystemsDS3Handler(Thing thing) {
         super(thing);
@@ -95,17 +97,24 @@ public class apsystemsDS3Handler extends BaseThingHandler {
                     updateState(CHANNEL_DS3_INVERTER_VOLTAGE2,
                             new QuantityType<>(lastInverterRealtimeData.getAcVoltage2(), Units.VOLT));
                     break;
+
+                case CHANNEL_DS3_INVERTER_SIGNAL:
+                    updateState(CHANNEL_DS3_INVERTER_SIGNAL,
+                            new QuantityType<>(this.lastInverterSignal, Units.PERCENT));
+                    break;
             }
         }
     }
 
     public String getSerialNumber() {
-        return config.serial;
+        return getConfigAs(apsystemsDS3Configuration.class).serial;
     }
 
     @Override
     public void initialize() {
         updateStatus(ThingStatus.UNKNOWN);
+
+        config = getConfigAs(apsystemsDS3Configuration.class);
 
         Map<String, String> proerties = editProperties();
         proerties.put(PROPERTY_DS3_SERIALNUMBER, config.serial);
@@ -114,33 +123,62 @@ public class apsystemsDS3Handler extends BaseThingHandler {
         logger.info("DS3 SN {} initialized", config.serial);
     }
 
-    public void update(InverterRealtimeData inverterData) {
-        this.lastInverterRealtimeData = inverterData;
+    /**
+     * @Override
+     *           public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
+     *           logger.debug("{}: Thing config updated, re-initialize", config.serial);
+     * 
+     *           if (configurationParameters.containsKey("serial")) {
+     * 
+     *           Object o = configurationParameters.get("serial");
+     *           String newSerial = "unknwon";
+     *           if (o != null) {
+     *           newSerial = (String) o;
+     *           }
+     * 
+     *           Map<String, String> proerties = editProperties();
+     *           proerties.put(PROPERTY_DS3_SERIALNUMBER, newSerial);
+     *           updateProperties(proerties);
+     *           }
+     * 
+     *           super.handleConfigurationUpdate(configurationParameters);
+     *           }
+     */
 
-        Map<String, String> proerties = editProperties();
-        proerties.put(PROPERTY_DS3_TYPE, inverterData.getType().toString());
-        updateProperties(proerties);
+    public void updateRealTimeData(@Nullable InverterRealtimeData inverterData) {
 
-        updateState(CHANNEL_DS3_INVERTER_STATE, new StringType(inverterData.getState().toString()));
-        updateState(CHANNEL_DS3_INVERTER_FREQUENCY,
-                new QuantityType<Frequency>(inverterData.getFrequency(), Units.HERTZ));
-        updateState(CHANNEL_DS3_INVERTER_TEMPERATURE,
-                new QuantityType<>(inverterData.getTemperature(), SIUnits.CELSIUS));
-        updateState(CHANNEL_DS3_INVERTER_POWER1, new QuantityType<>(inverterData.getPower1(), Units.WATT));
-        updateState(CHANNEL_DS3_INVERTER_POWER2, new QuantityType<>(inverterData.getPower2(), Units.WATT));
-        updateState(CHANNEL_DS3_INVERTER_VOLTAGE1, new QuantityType<>(inverterData.getAcVoltage1(), Units.VOLT));
-        updateState(CHANNEL_DS3_INVERTER_VOLTAGE2, new QuantityType<>(inverterData.getAcVoltage2(), Units.VOLT));
-
-        logger.info("DS3 SN {} update data received", config.serial);
-    }
-
-    public void onUpdateDone() {
-        if (lastInverterRealtimeData == null) {
+        if (inverterData == null) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
         } else {
+            this.lastInverterRealtimeData = inverterData;
+
+            Map<String, String> proerties = editProperties();
+            proerties.put(PROPERTY_DS3_TYPE, inverterData.getType().toString());
+            updateProperties(proerties);
+
+            updateState(CHANNEL_DS3_INVERTER_STATE, new StringType(inverterData.getState().toString()));
+            updateState(CHANNEL_DS3_INVERTER_FREQUENCY,
+                    new QuantityType<Frequency>(inverterData.getFrequency(), Units.HERTZ));
+            updateState(CHANNEL_DS3_INVERTER_TEMPERATURE,
+                    new QuantityType<>(inverterData.getTemperature(), SIUnits.CELSIUS));
+            updateState(CHANNEL_DS3_INVERTER_POWER1, new QuantityType<>(inverterData.getPower1(), Units.WATT));
+            updateState(CHANNEL_DS3_INVERTER_POWER2, new QuantityType<>(inverterData.getPower2(), Units.WATT));
+            updateState(CHANNEL_DS3_INVERTER_VOLTAGE1, new QuantityType<>(inverterData.getAcVoltage1(), Units.VOLT));
+            updateState(CHANNEL_DS3_INVERTER_VOLTAGE2, new QuantityType<>(inverterData.getAcVoltage2(), Units.VOLT));
+
+            logger.info("DS3 SN {} update data received", config.serial);
             updateStatus(ThingStatus.ONLINE);
         }
+    }
 
-        logger.info("DS3 SN {} update done", config.serial);
+    public void updateInverterSignal(@Nullable Entry<String, Float> inverterSignal) {
+
+        if (inverterSignal == null) {
+            lastInverterSignal = 0f;
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
+        } else {
+            lastInverterSignal = inverterSignal.getValue();
+            updateState(CHANNEL_DS3_INVERTER_SIGNAL, new QuantityType<>(this.lastInverterSignal, Units.PERCENT));
+        }
     }
 }

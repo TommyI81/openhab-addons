@@ -18,9 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author Thomas Ilzhoefer - Initial contribution
  */
+@NonNullByDefault
 public class InverterSignalPayload extends ECUResponsePayload {
 
     private InverterSignalPayload() {
@@ -41,7 +44,10 @@ public class InverterSignalPayload extends ECUResponsePayload {
             int iSignal = BinaryTools.TwoBytesToInt(Arrays.copyOfRange(bytes, iBinPos, iBinPos += 1));
 
             float fSignalPercentage = iSignal / 255f * 100f;
-            payload.getInverterSignals().add(new SimpleEntry<>(strInverterId, fSignalPercentage));
+
+            if (strInverterId != null) {
+                payload.getInverterSignals().add(new SimpleEntry<>(strInverterId, fSignalPercentage));
+            }
         }
 
         return payload;

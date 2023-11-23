@@ -25,6 +25,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Thomas Ilzhoefer - Initial contribution
@@ -34,6 +36,7 @@ public class ECUConnector {
     private int Port;
     private String Host;
     private @NonNull LocalDateTime LastRequest = LocalDateTime.MIN;
+    private final Logger logger = LoggerFactory.getLogger(ECUConnector.class);
 
     public ECUConnector(String host, int port) {
         this.Host = host;
@@ -84,6 +87,7 @@ public class ECUConnector {
 
         // relaxation for ECU traffic
         if (Duration.between(this.LastRequest, LocalDateTime.now()).toSeconds() < 3) {
+            logger.info("Delaying request for 3 seconds to relax network");
             Thread.sleep(3000);
         }
 

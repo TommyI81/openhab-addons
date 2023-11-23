@@ -14,8 +14,8 @@ package org.openhab.binding.apsystems.internal;
 
 import static org.openhab.binding.apsystems.internal.apsystemsBindingConstants.*;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.apsystems.internal.ECU.ECUConnector;
 import org.openhab.binding.apsystems.internal.ECU.ECUResponse;
 import org.openhab.binding.apsystems.internal.ECU.InverterRealtimeData;
+import org.openhab.binding.apsystems.internal.ECU.InverterSignalPayload;
 import org.openhab.binding.apsystems.internal.ECU.RealtimeDataPayload;
 import org.openhab.binding.apsystems.internal.ECU.SystemInfoPayload;
 import org.openhab.core.library.types.DecimalType;
@@ -51,14 +52,12 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(apsystemsBridgeHandler.class);
 
-    private apsystemsECUConfiguration config;
+    // private apsystemsECUConfiguration config;
     private @Nullable ScheduledFuture<?> pollingJob;
     private @Nullable ECUResponse lastSystemInfoResponse;
 
     public apsystemsBridgeHandler(Bridge bridge) {
         super(bridge);
-
-        config = getConfigAs(apsystemsECUConfiguration.class);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
 
             switch (channelUID.getId()) {
                 case CHANNEL_ECU_CURRENT_DAY_ENERGY:
-                    updateState(CHANNEL_ECU_CURRENT_DAY_ENERGY, new DecimalType(payload.getLifeTimeEnergy()));
+                    updateState(CHANNEL_ECU_CURRENT_DAY_ENERGY, new DecimalType(payload.getCurrentDayEnergy()));
                     break;
                 case CHANNEL_ECU_LAST_SYSTEM_POWER:
                     updateState(CHANNEL_ECU_LAST_SYSTEM_POWER,
@@ -99,11 +98,15 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
         updateStatus(ThingStatus.UNKNOWN);
         scheduler.execute(this::loadBridgeData);
 
-        pollingJob = scheduler.scheduleAtFixedRate(this::loadBridgeData, 3, 3, TimeUnit.MINUTES);
+        apsystemsECUConfiguration config = getConfigAs(apsystemsECUConfiguration.class);
+
+        pollingJob = scheduler.scheduleAtFixedRate(this::loadBridgeData, config.pollingInterval, config.pollingInterval,
+                TimeUnit.SECONDS);
     }
 
     private void loadBridgeData() {
 
+        apsystemsECUConfiguration config = getConfigAs(apsystemsECUConfiguration.class);
         ECUConnector connector = new ECUConnector(config.ipAddress, config.port);
 
         try {
@@ -130,32 +133,41 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
                 updateState(CHANNEL_ECU_LAST_SYSTEM_POWER,
                         new QuantityType<>(systemInfoPayload.getLastSystemPower(), Units.WATT));
                 updateState(CHANNEL_ECU_LIFETIME_ENERGY, new DecimalType(systemInfoPayload.getLifeTimeEnergy()));
-                updateState(CHANNEL_ECU_CURRENT_DAY_ENERGY, new DecimalType(systemInfoPayload.getLifeTimeEnergy()));
+                updateState(CHANNEL_ECU_CURRENT_DAY_ENERGY, new DecimalType(systemInfoPayload.getCurrentDayEnergy()));
                 updateState(CHANNEL_ECU_NO_OF_INVERTERS, new DecimalType(systemInfoPayload.getNoOfInverters()));
                 updateState(CHANNEL_ECU_NO_OF_INVERTERS_ONLINE,
                         new DecimalType(systemInfoPayload.getInvertersOnline()));
 
                 // Update Inverters
-                ECUResponse response = connector.fetchRealTimeData(systemInfoPayload.getECUId());
-                RealtimeDataPayload realtimeDataPayload = (RealtimeDataPayload) response.getECUResponsePayload();
+                ECUResponse realtimeResponse = connector.fetchRealTimeData(systemInfoPayload.getECUId());
+                RealtimeDataPayload realtimeDataPayload = (RealtimeDataPayload) realtimeResponse
+                        .getECUResponsePayload();
 
-                for (InverterRealtimeData inverterData : realtimeDataPayload.getInverter()) {
+                ECUResponse inverterSignalResponse = connector.fetchInverterSignals(systemInfoPayload.getECUId());
+                InverterSignalPayload inverterSignalPayload = (InverterSignalPayload) inverterSignalResponse
+                        .getECUResponsePayload();
 
-                    String inverterID = inverterData.getInverterID();
-                    @Nullable
-                    apsystemsDS3Handler inverterHandler = findInverter(inverterID);
-
-                    if (inverterHandler != null) {
-                        inverterHandler.update(inverterData);
-                    }
-                }
-
-                // set all configured Inverters without data to offline
                 for (Thing inverterThing : getThing().getThings()) {
                     if (inverterThing.getThingTypeUID().equals(DS3INVERTER_THING_TYPE)) {
                         apsystemsDS3Handler ds3Handler = (apsystemsDS3Handler) inverterThing.getHandler();
+
                         if (ds3Handler != null) {
-                            ds3Handler.onUpdateDone();
+
+                            // Update Realtime Data
+                            InverterRealtimeData inverterRealtimeData = null;
+
+                            inverterRealtimeData = realtimeDataPayload.getInverter().stream()
+                                    .filter(t -> t.getInverterID().equals(ds3Handler.getSerialNumber())).findFirst()
+                                    .orElse(null);
+
+                            ds3Handler.updateRealTimeData(inverterRealtimeData);
+
+                            // Update Inverter Signals
+                            Entry<String, Float> inverterSignal = inverterSignalPayload.getInverterSignals().stream()
+                                    .filter(t -> t.getKey().equals(ds3Handler.getSerialNumber())).findFirst()
+                                    .orElse(null);
+
+                            ds3Handler.updateInverterSignal(inverterSignal);
                         }
                     }
                 }
@@ -167,24 +179,6 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
             logger.error("Error fetching system info", ex);
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
         }
-    }
-
-    private @Nullable apsystemsDS3Handler findInverter(String inverterId) {
-
-        List<Thing> configuredInverters = getThing().getThings();
-
-        for (Thing thing : configuredInverters) {
-            if (thing.getThingTypeUID().equals(DS3INVERTER_THING_TYPE)) {
-                apsystemsDS3Handler ds3Handler = (apsystemsDS3Handler) thing.getHandler();
-                if (ds3Handler != null) {
-                    String inverterSerial = ds3Handler.getSerialNumber();
-                    if (inverterSerial.equals(inverterId)) {
-                        return ds3Handler;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     @Override

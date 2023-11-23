@@ -26,7 +26,7 @@
 			</channel>
 
 			<channel id="ECU_NoOfInvertersOnline" typeId="ecu_noofinverters_type">
-				<label>Number of configured inverters</label>
+				<label>Number of online inverters</label>
 			</channel>
 
 		</channels>
@@ -46,7 +46,7 @@
 
 	<channel-type id="ecu_noofinverters_type">
 		<item-type>Number</item-type>
-		<label>Number of inverters</label>
+		<label>Amount of inverters</label>
 		<description>Number of Inverters</description>
 		<state readOnly="true"/>
 	</channel-type>

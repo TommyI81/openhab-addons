@@ -46,6 +46,7 @@ public class apsystemsBindingConstants {
     public static final String CHANNEL_DS3_INVERTER_POWER2 = "DS3_Power2";
     public static final String CHANNEL_DS3_INVERTER_VOLTAGE1 = "DS3_Voltage1";
     public static final String CHANNEL_DS3_INVERTER_VOLTAGE2 = "DS3_Voltage2";
+    public static final String CHANNEL_DS3_INVERTER_SIGNAL = "DS3_InverterSignal";
 
     // List of all Properties
     public static final String PROPERTY_ECU_SERIALNUMBER = "ECU_Serialnumber";

@@ -20,6 +20,26 @@
 			<default>300</default>
 			<advanced>true</advanced>
 		</parameter>
+		<parameter name="forceNightlyDowntime" type="boolean" required="false">
+			<label>force nightly downtime</label>
+			<description>enforce a nightly downtime where no requests are sent to the ECU</description>
+			<default>false</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="nightlyDowntimeStart" type="text" pattern="^([0-1][0-9]|2[0-3])(:[0-5][0-9])$"
+			required="false">
+			<label>Downtime start</label>
+			<description>start of the nightly downtime - in the evening (hh:mm)</description>
+			<default>22:00</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="nightlyDowntimeEnd" type="text" pattern="^([0-1][0-9]|2[0-3])(:[0-5][0-9])$"
+			required="false">
+			<label>Downtime end</label>
+			<description>end of the nightly downtime - in the morning (hh:mm)</description>
+			<default>07:00</default>
+			<advanced>true</advanced>
+		</parameter>
 	</config-description>
 
 	<config-description uri="thing-type:apsystems:DS3">

@@ -12,6 +12,9 @@
  */
 package org.openhab.binding.apsystems.internal;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
@@ -28,4 +31,18 @@ public class apsystemsECUConfiguration {
     public String ipAddress = "";
     public Integer port = 0;
     public Integer pollingInterval = 3000;
+
+    public boolean forceNightlyDowntime = false;
+    public String nightlyDowntimeStart = "";
+    public String nightlyDowntimeEnd = "";
+
+    public LocalTime getDowntimeStart() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(this.nightlyDowntimeStart, df);
+    }
+
+    public LocalTime getDowntimeEnd() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(this.nightlyDowntimeEnd, df);
+    }
 }
