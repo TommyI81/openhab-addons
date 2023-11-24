@@ -14,6 +14,7 @@ package org.openhab.binding.apsystems.internal;
 
 import static org.openhab.binding.apsystems.internal.apsystemsBindingConstants.*;
 
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledFuture;
@@ -110,6 +111,42 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
         ECUConnector connector = new ECUConnector(config.ipAddress, config.port);
 
         try {
+
+            /*- 
+             * check for downtime
+             * 4 cases:
+             *              Day1 | Day2
+             * Case 1:   S --> E | 0        S < E
+             * Case 2:     S --> | E        S > E       Start till End on the next Day ( End < Start - otherwise Case 1)
+             * Case 3:         E | S -->    S > E       End reached, Start on next Day ( Same as Case 2 POV)
+             * Case 4:       S=E |          S = E       Useless but configurable
+             */
+
+            LocalTime currentTime = LocalTime.now();
+            LocalTime downtimeStart = config.getDowntimeStart();
+            LocalTime downtimeEnd = config.getDowntimeEnd();
+
+            boolean bDowntimeIsRunning = false;
+            boolean bStartTimePassed = currentTime.compareTo(downtimeStart) > 0 ? true : false;
+            boolean bEndTimePassed = currentTime.compareTo(downtimeEnd) > 0 ? true : false;
+
+            if (downtimeStart.compareTo(downtimeEnd) < 0) {
+                // Case 1
+                bDowntimeIsRunning = (bStartTimePassed && !bEndTimePassed);
+            } else if (downtimeStart.compareTo(downtimeEnd) > 0) {
+                // Case 2 / 3
+                bDowntimeIsRunning = (bEndTimePassed && !bStartTimePassed);
+            } else {
+                // Case 4
+                bDowntimeIsRunning = false;
+            }
+
+            if (config.forceNightlyDowntime == true && bDowntimeIsRunning == true) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
+                logger.info("No ECU update during downtime");
+                return;
+            }
+
             lastSystemInfoResponse = connector.fetchSystemInfo();
 
             if (lastSystemInfoResponse != null) {
