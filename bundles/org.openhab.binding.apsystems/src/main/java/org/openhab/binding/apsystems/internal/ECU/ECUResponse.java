@@ -148,16 +148,6 @@ public class ECUResponse {
 
             case COMMAND_CODE_GET_ENERGY_OF_WEEK_MONTH_YEAR:
                 throw new Exception("Not implemented yet");
-            // response.MatchStatus = getMatchStatus(bytes.Skip(13).Take(2).ToArray());
-            // if (response.MatchStatus == MatchStatusCode.OK)
-            // {
-            // iPayloadStart = 15;
-            // iPayloadLength = iDataLength - 3 - 15; // - APS - HEADER
-            // response.Payload =
-            // EnergyOfWeekMonthYearPayload.createFromBytes(bytes.Skip(iPayloadStart).Take(iPayloadLength).ToArray(),
-            // logger);
-            // }
-            // break;
 
             case COMMAND_CODE_GET_INVERTER_SIGNAL:
                 response.MatchStatus = getMatchStatus(bytes);

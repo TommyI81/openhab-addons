@@ -59,7 +59,7 @@ public class RealtimeDataPayload extends ECUResponsePayload {
     }
 
     @SuppressWarnings("null")
-    public static RealtimeDataPayload createFromBytes(byte[] bytes /* , ILogger? logger = null */ ) {
+    public static RealtimeDataPayload createFromBytes(byte[] bytes) {
         RealtimeDataPayload payload = new RealtimeDataPayload();
 
         payload.ECUModel = new String(Arrays.copyOfRange(bytes, 0, 2), StandardCharsets.US_ASCII);

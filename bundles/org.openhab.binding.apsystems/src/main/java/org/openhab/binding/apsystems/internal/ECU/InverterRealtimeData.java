@@ -23,6 +23,8 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.apsystems.internal.apsystemsBindingConstants.InverterState;
 import org.openhab.binding.apsystems.internal.apsystemsBindingConstants.InverterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Thomas Ilzhoefer - Initial contribution
@@ -39,6 +41,8 @@ public class InverterRealtimeData {
     private int Power2;
     private int AcVoltage2;
     private String InverterID;
+
+    private final static Logger logger = LoggerFactory.getLogger(InverterRealtimeData.class);
 
     /**
      * @return the inverterID
@@ -134,13 +138,13 @@ public class InverterRealtimeData {
                 } else if (inverter.InverterID.startsWith("70")) {
                     inverter.Type = InverterType.DS3;
                 } else {
-                    // logger?.LogError($"Unknonw Invertertype with ID {inverter.InverterID}");
+                    logger.error("Unknonw Invertertype with ID %s", inverter.Type.toString());
                     inverter.Type = InverterType.unknown;
                 }
             }
 
             if (inverter.Type != InverterType.DS3) {
-                // throw new Exception("Inverter with Type {inverter.Type} ist currently not supported");
+                logger.error("Inverter with Type %s ist currently not supported", inverter.Type.toString());
             }
 
             int iFrequncyRaw = BinaryTools

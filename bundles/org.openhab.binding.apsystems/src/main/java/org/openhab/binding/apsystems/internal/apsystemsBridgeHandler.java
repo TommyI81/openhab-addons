@@ -94,7 +94,7 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
     @Override
     public void initialize() {
 
-        logger.debug("Initializing Bridge {}", getThing().getLabel());
+        logger.info("Initializing Bridge");
 
         updateStatus(ThingStatus.UNKNOWN);
         scheduler.execute(this::loadBridgeData);
@@ -135,7 +135,7 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
                 bDowntimeIsRunning = (bStartTimePassed && !bEndTimePassed);
             } else if (downtimeStart.compareTo(downtimeEnd) > 0) {
                 // Case 2 / 3
-                bDowntimeIsRunning = (bEndTimePassed && !bStartTimePassed);
+                bDowntimeIsRunning = (!bEndTimePassed && bStartTimePassed);
             } else {
                 // Case 4
                 bDowntimeIsRunning = false;

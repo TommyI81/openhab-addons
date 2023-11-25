@@ -15,10 +15,15 @@ package org.openhab.binding.apsystems.internal.ECU;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Thomas Ilzhoefer - Initial contribution
  */
 public class BinaryTools {
+
+    private final static Logger logger = LoggerFactory.getLogger(BinaryTools.class);
 
     public static Integer TwoBytesToInt(byte[] bytes) {
         if (bytes.length == 1) {
@@ -29,6 +34,7 @@ public class BinaryTools {
 
         if (bytes.length > 2) {
             // Overflow converting TwoBytesToInt
+            logger.warn("BinaryTools.TwoBytesToInt - overflow (%s)", bytes.toString());
             return 0xFFFF;
         }
 
@@ -87,6 +93,7 @@ public class BinaryTools {
 
         if (bytes.length > 4) {
             // Overflow converting FourBytesToInt
+            logger.warn("BinaryTools.FourBytesToInt - overflow (%s)", bytes.toString());
             return Integer.MAX_VALUE;
         }
 

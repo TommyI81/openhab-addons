@@ -25,9 +25,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public class apsystemsECUConfiguration {
 
-    /**
-     * Sample configuration parameters. Replace with your own.
-     */
     public String ipAddress = "";
     public Integer port = 0;
     public Integer pollingInterval = 3000;

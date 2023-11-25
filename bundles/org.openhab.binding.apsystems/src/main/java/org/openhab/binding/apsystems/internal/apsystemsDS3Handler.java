@@ -123,28 +123,6 @@ public class apsystemsDS3Handler extends BaseThingHandler {
         logger.info("DS3 SN {} initialized", config.serial);
     }
 
-    /**
-     * @Override
-     *           public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
-     *           logger.debug("{}: Thing config updated, re-initialize", config.serial);
-     * 
-     *           if (configurationParameters.containsKey("serial")) {
-     * 
-     *           Object o = configurationParameters.get("serial");
-     *           String newSerial = "unknwon";
-     *           if (o != null) {
-     *           newSerial = (String) o;
-     *           }
-     * 
-     *           Map<String, String> proerties = editProperties();
-     *           proerties.put(PROPERTY_DS3_SERIALNUMBER, newSerial);
-     *           updateProperties(proerties);
-     *           }
-     * 
-     *           super.handleConfigurationUpdate(configurationParameters);
-     *           }
-     */
-
     public void updateRealTimeData(@Nullable InverterRealtimeData inverterData) {
 
         if (inverterData == null) {

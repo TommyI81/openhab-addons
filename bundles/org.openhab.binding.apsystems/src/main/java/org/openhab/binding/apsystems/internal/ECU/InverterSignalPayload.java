@@ -36,7 +36,7 @@ public class InverterSignalPayload extends ECUResponsePayload {
         return InverterSignals;
     }
 
-    public static InverterSignalPayload createFromBytes(byte[] bytes /* , ILogger? logger = null */) {
+    public static InverterSignalPayload createFromBytes(byte[] bytes) {
         InverterSignalPayload payload = new InverterSignalPayload();
 
         for (int iBinPos = 0; iBinPos < bytes.length;) {

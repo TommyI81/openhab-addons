@@ -17,6 +17,6 @@ package org.openhab.binding.apsystems.internal.ECU;
  */
 public class EnergyOfWeekMonthYearPayload {
 
-    // TODO
+    // TODO - not yet implemented
 
 }
