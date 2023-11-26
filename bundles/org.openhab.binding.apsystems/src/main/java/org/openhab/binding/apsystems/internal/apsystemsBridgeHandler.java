@@ -121,25 +121,7 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
              * Case 3:         E | S -->    S > E       End reached, Start on next Day ( Same as Case 2 POV)
              * Case 4:       S=E |          S = E       Useless but configurable
              */
-
-            LocalTime currentTime = LocalTime.now();
-            LocalTime downtimeStart = config.getDowntimeStart();
-            LocalTime downtimeEnd = config.getDowntimeEnd();
-
-            boolean bDowntimeIsRunning = false;
-            boolean bStartTimePassed = currentTime.compareTo(downtimeStart) > 0 ? true : false;
-            boolean bEndTimePassed = currentTime.compareTo(downtimeEnd) > 0 ? true : false;
-
-            if (downtimeStart.compareTo(downtimeEnd) < 0) {
-                // Case 1
-                bDowntimeIsRunning = (bStartTimePassed && !bEndTimePassed);
-            } else if (downtimeStart.compareTo(downtimeEnd) > 0) {
-                // Case 2 / 3
-                bDowntimeIsRunning = (!bEndTimePassed && bStartTimePassed);
-            } else {
-                // Case 4
-                bDowntimeIsRunning = false;
-            }
+            boolean bDowntimeIsRunning = isDowntimeRunning(config.getDowntimeStart(), config.getDowntimeEnd());
 
             if (config.forceNightlyDowntime == true && bDowntimeIsRunning == true) {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
@@ -225,5 +207,41 @@ public class apsystemsBridgeHandler extends BaseBridgeHandler {
             job.cancel(true);
             pollingJob = null;
         }
+    }
+
+    public static boolean isDowntimeRunning(LocalTime fromTime, LocalTime toTime, LocalTime... timeToTest) {
+        LocalTime testTime = (timeToTest.length >= 1) ? timeToTest[0] : LocalTime.now();
+
+        /*- 
+        * check for downtime
+        * 4 cases:
+        *          |--- Day ---|   
+        * Case 1:   S --> E         S < E
+        * Case 2:   E     S -->     S > E       Start till End on the next Day ( End < Start - otherwise Case 1)
+        * Case 3:       S=E         S = E       Useless but configurable
+        */
+
+        boolean bDowntimeIsRunning = false;
+        boolean bStartTimePassed = testTime.compareTo(fromTime) > 0 ? true : false;
+        boolean bEndTimePassed = testTime.compareTo(toTime) > 0 ? true : false;
+
+        if (fromTime.compareTo(toTime) < 0) {
+            // Case 1
+            bDowntimeIsRunning = (bStartTimePassed && !bEndTimePassed);
+        } else if (fromTime.compareTo(toTime) > 0) {
+            // Case 2
+
+            if (testTime.compareTo(toTime) > 0 && testTime.compareTo(fromTime) < 0) {
+                bDowntimeIsRunning = false;
+            } else {
+                bDowntimeIsRunning = true;
+            }
+
+        } else {
+            // Case 3
+            bDowntimeIsRunning = false;
+        }
+
+        return bDowntimeIsRunning;
     }
 }
