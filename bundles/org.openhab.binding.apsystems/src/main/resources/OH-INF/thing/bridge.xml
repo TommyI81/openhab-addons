@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="apsystems"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<bridge-type id="ecu">
+		<label>ECU Bridge</label>
+		<description>APSystems Energy Communication Unit</description>
+
+		<channels>
+			<channel id="ECU_lastSystemPower" typeId="system.electric-power">
+				<label>Last System Power</label>
+			</channel>
+
+			<channel id="ECU_LifeTimeEnergy" typeId="system.electric-energy">
+				<label>Life Time Energy</label>
+			</channel>
+
+			<channel id="ECU_CurrentDayEnergy" typeId="system.electric-energy">
+				<label>Current Day Energy</label>
+			</channel>
+
+			<channel id="ECU_NoOfInverters" typeId="ecu_noofinverters_type">
+				<label>Number of configured inverters</label>
+			</channel>
+
+			<channel id="ECU_NoOfInvertersOnline" typeId="ecu_noofinverters_type">
+				<label>Number of online inverters</label>
+			</channel>
+
+		</channels>
+
+		<properties>
+			<property name="ECU_Serialnumber"/>
+			<property name="ECU_Version"/>
+			<property name="ECU_Model"/>
+			<property name="ECU_TimeZone"/>
+			<property name="ECU_Channel"/>
+		</properties>
+
+		<representation-property>ECU_Serialnumber</representation-property>
+
+		<config-description-ref uri="bridge-type:apsystems:ecu"/>
+	</bridge-type>
+
+	<channel-type id="ecu_noofinverters_type">
+		<item-type>Number</item-type>
+		<label>Amount of inverters</label>
+		<description>Number of Inverters</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+</thing:thing-descriptions>

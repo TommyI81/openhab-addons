@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="apsystems"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<thing-type id="DS3">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="ecu"/>
+		</supported-bridge-type-refs>
+
+
+		<label>Inverter</label>
+		<description>APSYSTEMS DS3 Inverter</description>
+
+		<channels>
+			<channel id="DS3_InverterState" typeId="ds3_inverter_state_type">
+				<label>Inverter State</label>
+			</channel>
+
+			<channel id="DS3_Frequency" typeId="ds3_inverter_frequency_type">
+				<label>voltage frequency</label>
+			</channel>
+
+			<channel id="DS3_Temperature" typeId="ds3_inverter_temperature_type">
+				<label>inverter temperature</label>
+			</channel>
+
+			<channel id="DS3_Power1" typeId="system.electric-power">
+				<label>power from input 1</label>
+			</channel>
+
+			<channel id="DS3_Power2" typeId="system.electric-power">
+				<label>power from input 2</label>
+			</channel>
+
+			<channel id="DS3_Voltage1" typeId="system.electric-voltage">
+				<label>voltage from input 1</label>
+			</channel>
+
+			<channel id="DS3_Voltage2" typeId="system.electric-voltage">
+				<label>voltage from input 2</label>
+			</channel>
+
+			<channel id="DS3_InverterSignal" typeId="ds3_inverter_signal_type">
+				<label>Zigbee Signal strenght</label>
+			</channel>
+
+		</channels>
+
+
+		<properties>
+			<!--<property name="DS3_Serialnumber"/> -->
+			<property name="DS3_Type"/>
+		</properties>
+
+
+		<representation-property>DS3_Serialnumber</representation-property>
+
+		<config-description-ref uri="thing-type:apsystems:DS3"/>
+
+	</thing-type>
+
+
+	<channel-type id="ds3_inverter_signal_type">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Zigbee Signal strenght</label>
+		<description>shows the Zigbee strenght</description>
+		<state pattern="%.1f %%" readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="ds3_inverter_state_type">
+		<item-type>String</item-type>
+		<label>inverter state</label>
+		<description>shows the state of the inverter</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="ds3_inverter_frequency_type">
+		<item-type>Number:Frequency</item-type>
+		<label>voltage frequency</label>
+		<description>shows the voltage frequency of the inverter</description>
+		<state pattern="%.2f Hz" readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="ds3_inverter_temperature_type">
+		<item-type>Number:Temperature</item-type>
+		<label>temperature of the inverter</label>
+		<description>shows the temperature of the inverter of the inverter</description>
+		<state pattern="%.2f °C" readOnly="true"/>
+	</channel-type>
+
+</thing:thing-descriptions>
